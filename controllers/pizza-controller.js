@@ -6,6 +6,16 @@ const pizzaController = {
     // first method = get all pizzas
     getAllPizza(req, res) {
         Pizza.find({})
+            // populate the comments
+            .populate({
+                path: 'comments',
+                // minus sign indicates that we don't want this value returned
+                select: '-__v'
+            })
+            // also exclude Pizza 'v' value
+            .select('-__v')
+            // sort pizzas so newest pizza returns first (DESC order by Id value)
+            .sort({ _id: -1 })
             .then(dbPizzaData => res.json(dbPizzaData))
             .catch(err => {
                 console.log(err);
